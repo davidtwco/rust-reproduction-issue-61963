@@ -1,5 +1,4 @@
 extern crate proc_macro;
-extern crate proc_macro2;
 #[macro_use]
 extern crate quote;
 
@@ -20,13 +19,9 @@ pub fn expand_token_stream(input: proc_macro::TokenStream) -> proc_macro::TokenS
     }
 
     let mut items = quote! {};
-
-    let mut params = proc_macro2::TokenStream::new();
-    params.append_separated(input.generics.type_params().map(|param| &param.ident), ", ");
-
     items.append_all(field_types.iter().map(|ty| {
         quote! {
-            impl Bar for ((#params), #ty) {}
+            impl Bar for ((), #ty) {}
         }
     }));
 
