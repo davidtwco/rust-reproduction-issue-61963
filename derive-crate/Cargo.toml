@@ -10,5 +10,3 @@ edition = "2015"
 proc-macro = true
 
 [dependencies]
-syn = "=0.15.34"
-quote = "=0.6.3"
