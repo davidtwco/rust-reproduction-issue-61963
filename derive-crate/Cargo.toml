@@ -1,0 +1,15 @@
+[package]
+name = "derive-crate"
+version = "0.1.0"
+authors = ["David Wood <git@david.davidtw.co>"]
+edition = "2015"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "=0.4.26"
+syn = "=0.15.34"
+quote = "=0.6.3"
