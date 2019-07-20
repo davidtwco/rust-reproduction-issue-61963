@@ -1,6 +1,6 @@
 extern crate proc_macro;
 
-use proc_macro::{TokenStream, TokenTree};
+use proc_macro::{Group, TokenStream, TokenTree};
 
 #[proc_macro_derive(DomObject)]
 pub fn expand_token_stream(input: TokenStream) -> TokenStream {
@@ -19,14 +19,14 @@ pub fn expand_token_stream(input: TokenStream) -> TokenStream {
                 token.set_span(dummy_span);
             }
 
-            let mut stream = proc_macro::TokenStream::new();
+            let mut stream = TokenStream::new();
             stream.extend(tokens);
 
-            *group = proc_macro::Group::new(group.delimiter(), stream);
+            *group = Group::new(group.delimiter(), stream);
         }
     }
     
-    let mut stream = proc_macro::TokenStream::new();
+    let mut stream = TokenStream::new();
     stream.extend(tokens);
     stream
 }
