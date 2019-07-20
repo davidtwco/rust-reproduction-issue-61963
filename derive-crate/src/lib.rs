@@ -6,7 +6,7 @@ use proc_macro::{Group, TokenStream, TokenTree};
 pub fn expand_token_stream(input: TokenStream) -> TokenStream {
     let dummy_span = input.into_iter().nth(0).unwrap().span();
 
-    // set-up the expanded output, just like the original crate would in this example
+    // set-up the expanded output, with the piece of code triggering the warning in the original crate
     let static_source: TokenStream = "impl Bar for ((), Box<Bar>) {}".parse().unwrap();
     let mut tokens: Vec<_> = static_source.into_iter().collect();
 
