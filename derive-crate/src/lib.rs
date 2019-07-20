@@ -1,30 +1,33 @@
 extern crate proc_macro;
-#[macro_use]
-extern crate quote;
 
-use quote::TokenStreamExt;
+use proc_macro::{TokenStream, TokenTree};
 
 #[proc_macro_derive(DomObject)]
-pub fn expand_token_stream(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let input: syn::DeriveInput = syn::parse(input).unwrap();
-    let fields = if let syn::Data::Struct(syn::DataStruct { ref fields, .. }) = input.data {
-        fields.iter().collect::<Vec<&syn::Field>>()
-    } else {
-        panic!("#[derive(DomObject)] should only be applied on proper structs")
-    };
+pub fn expand_token_stream(input: TokenStream) -> TokenStream {
+    let dummy_span = input.into_iter().nth(0).unwrap().span();
 
-    let mut field_types = vec![];
-    for field in fields {
-        field_types.push(&field.ty);
-    }
+    // set-up the expanded output, just like the original crate would in this example
+    let static_source: TokenStream = "impl Bar for ((), Qux<Qux<Baz> >) {}
+                                      impl Bar for ((), Box<Bar>) {}".parse().unwrap();
 
-    let mut items = quote! {};
-    items.append_all(field_types.iter().map(|ty| {
-        quote! {
-            impl Bar for ((), #ty) {}
+    let mut tokens: Vec<_> = static_source.into_iter().collect();
+
+    // set-up tokens' spans just like `quote` would in this example
+    for (_, group) in tokens.iter_mut().enumerate().filter(|&(idx, _)| idx == 3 || idx == 8) {
+        if let TokenTree::Group(group) = group {
+            let mut tokens: Vec<_> = group.stream().into_iter().collect();
+            for token in tokens.iter_mut().skip(2) {
+                token.set_span(dummy_span);
+            }
+
+            let mut stream = proc_macro::TokenStream::new();
+            stream.extend(tokens);
+
+            *group = proc_macro::Group::new(group.delimiter(), stream);
         }
-    }));
-
-    let x = quote! { #items };
-    x.into()
+    }
+    
+    let mut stream = proc_macro::TokenStream::new();
+    stream.extend(tokens);
+    stream
 }
