@@ -8,12 +8,11 @@ pub fn expand_token_stream(input: TokenStream) -> TokenStream {
 
     // set-up the expanded output, just like the original crate would in this example
     let static_source: TokenStream = "impl Bar for ((), Box<Bar>) {}".parse().unwrap();
-
     let mut tokens: Vec<_> = static_source.into_iter().collect();
 
-    // set-up tokens' spans just like `quote` would in this example
-    for group in tokens.iter_mut() {
-        if let TokenTree::Group(group) = group {
+    // set-up token spans just like `quote` would in this example
+    for token in tokens.iter_mut() {
+        if let TokenTree::Group(group) = token {
             let mut tokens: Vec<_> = group.stream().into_iter().collect();
             for token in tokens.iter_mut().skip(2) {
                 token.set_span(dummy_span);
