@@ -13,7 +13,7 @@ pub fn expand_token_stream(input: TokenStream) -> TokenStream {
     let mut tokens: Vec<_> = static_source.into_iter().collect();
 
     // set-up tokens' spans just like `quote` would in this example
-    for (_, group) in tokens.iter_mut().enumerate().filter(|&(idx, _)| idx == 3 || idx == 8) {
+    for group in tokens.iter_mut() {
         if let TokenTree::Group(group) = group {
             let mut tokens: Vec<_> = group.stream().into_iter().collect();
             for token in tokens.iter_mut().skip(2) {
