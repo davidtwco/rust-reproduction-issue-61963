@@ -7,8 +7,7 @@ pub fn expand_token_stream(input: TokenStream) -> TokenStream {
     let dummy_span = input.into_iter().nth(0).unwrap().span();
 
     // set-up the expanded output, just like the original crate would in this example
-    let static_source: TokenStream = "impl Bar for ((), Qux<Qux<Baz>>) {}
-                                      impl Bar for ((), Box<Bar>) {}".parse().unwrap();
+    let static_source: TokenStream = "impl Bar for ((), Box<Bar>) {}".parse().unwrap();
 
     let mut tokens: Vec<_> = static_source.into_iter().collect();
 
